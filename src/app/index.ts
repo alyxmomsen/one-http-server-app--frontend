@@ -18,14 +18,30 @@ export interface IBehavior {
     exec():string;
 }
 
+export enum EnumHookOpCode {
+    add_transaction,
+    other,
+}
+
+export type TRequestData = {
+    opcode: EnumHookOpCode;
+};
+
 export class ConcreteBehavior implements IBehavior {
     exec(): string {
 
+        const requestData:TRequestData = {
+            opcode:1,
+        }
+
         console.log('concrete behavior');
 
-        fetch('http://localhost:3000/api/add-transaction' , {
+        const baseurl  = "https://ardently-refreshing-opah.cloudpub.ru/" ;
+        // const baseurl = "http://localhost:3000/" ;
+
+        fetch(baseurl + 'api/add-transaction' , {
             method:'post',
-            body:JSON.stringify({data:0}),
+            body:JSON.stringify(requestData),
             headers:{
                 'content-type':'application/json'
             },

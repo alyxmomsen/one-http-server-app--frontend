@@ -1,16 +1,26 @@
 export class MyClass {
 
-    private behavior:IBehavior;
+    private defaultBehavior:IBehavior;
 
-    doSomeThing(before:() => void ,after:()=>void){
+    private request(clickBehavior:IBehavior|null = null) {
+
+        if(clickBehavior === null) return this.defaultBehavior.exec();
+        
+        clickBehavior.exec();
+
+    }
+
+    doSomeThing(before:() => void , clickBehavior:IBehavior|null ,after:()=>void){
         before();
-        this.behavior.exec();
+
+        this.request(clickBehavior);
+        
         after();
         
     }
 
     constructor () {
-        this.behavior = new ConcreteBehavior();
+        this.defaultBehavior = new Behavior_1();
     }
 }
 
@@ -27,21 +37,26 @@ export type TRequestData = {
     opcode: EnumHookOpCode;
 };
 
-export class ConcreteBehavior implements IBehavior {
-    exec(): string {
+export abstract class Behavior implements IBehavior {
 
-        const requestData:TRequestData = {
-            opcode:1,
-        }
+    protected requestData:TRequestData ;
 
-        console.log('concrete behavior');
+    exec(/* opcode:EnumHookOpCode */): string {
+
+        // const requestData:TRequestData = {
+        //     opcode,
+        // }
 
         const baseurl  = "https://ardently-refreshing-opah.cloudpub.ru/" ;
         // const baseurl = "http://localhost:3000/" ;
 
+
+        /**
+         * endpoint name is temp
+         */
         fetch(baseurl + 'api/add-transaction' , {
             method:'post',
-            body:JSON.stringify(requestData),
+            body:JSON.stringify(this.requestData),
             headers:{
                 'content-type':'application/json'
             },
@@ -56,6 +71,29 @@ export class ConcreteBehavior implements IBehavior {
         });
 
 
-        return 'bick dick bick dick dick head' ;
+        return 'message after all' ;
+    }
+
+    constructor (requestData:TRequestData) {
+        this.requestData = requestData
+    }
+}
+
+
+
+export class Behavior_default extends Behavior {
+    constructor () {
+        super({opcode:0});
+    }
+}
+export class Behavior_1 extends Behavior {
+    constructor () {
+        super({opcode:0});
+    }
+}
+
+export class Behavior_2 extends Behavior {
+    constructor () {
+        super({opcode:1});
     }
 }

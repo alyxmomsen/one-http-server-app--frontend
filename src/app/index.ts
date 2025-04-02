@@ -1,30 +1,26 @@
 export class MyClass {
 
-    private defaultBehavior:IBehavior;
-
-    private request(requestBehavior:IBehavior|null = null) {
+    private defaultBehavior:IRequestBehavior;
+    
+    private request(requestBehavior:IRequestBehavior|null = null) {
 
         if(requestBehavior === null) return this.defaultBehavior.exec();
-        
         requestBehavior.exec();
 
     }
 
-    doSomeThing(beforeRequest:() => void , requestBehavior:IBehavior|null ,afterResponse:()=>void){
+    doSomeThing(beforeRequest:() => void , requestBehavior:IRequestBehavior|null ,afterResponse:()=>void){
         beforeRequest();
-
         this.request(requestBehavior);
-        
         afterResponse();
-        
     }
 
     constructor () {
-        this.defaultBehavior = new Behavior_1();
+        this.defaultBehavior = new AddTransactionBehavior();
     }
 }
 
-export interface IBehavior {
+export interface IRequestBehavior {
     exec():string;
 }
 
@@ -34,10 +30,11 @@ export enum EnumHookOpCode {
 }
 
 export type TRequestData = {
+    userId: number;
     opcode: EnumHookOpCode;
 };
 
-export abstract class Behavior implements IBehavior {
+export abstract class RequestBehavior implements IRequestBehavior {
 
     protected requestData:TRequestData ;
 
@@ -48,6 +45,7 @@ export abstract class Behavior implements IBehavior {
 
         /**
          * name of this endpoint is temporary 
+         * becose i think this will be universal route like GraphQl of something
          */
         fetch(baseurl + 'api/add-transaction' , {
             method:'post',
@@ -74,21 +72,20 @@ export abstract class Behavior implements IBehavior {
     }
 }
 
-
-
-export class Behavior_default extends Behavior {
+export class Behavior_default extends RequestBehavior {
     constructor () {
-        super({opcode:EnumHookOpCode.add_transaction});
-    }
-}
-export class Behavior_1 extends Behavior {
-    constructor () {
-        super({opcode:EnumHookOpCode.add_transaction});
+        super({opcode:EnumHookOpCode.add_transaction , userId:0}); // BEWARE !! #hardcode
     }
 }
 
-export class Behavior_2 extends Behavior {
+export class AddTransactionBehavior extends RequestBehavior {
     constructor () {
-        super({opcode:EnumHookOpCode.other});
+        super({opcode:EnumHookOpCode.add_transaction,  userId:0}); // BEWARE !! #hardcode
+    }
+}
+
+export class Behavior_2 extends RequestBehavior {
+    constructor () {
+        super({opcode:EnumHookOpCode.other , userId:0}); // BEWARE !! #hardcode
     }
 }

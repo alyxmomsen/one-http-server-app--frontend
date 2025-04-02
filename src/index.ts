@@ -1,14 +1,16 @@
-import { Behavior, Behavior_1, Behavior_2, MyClass } from "./app";
+import { RequestBehavior, AddTransactionBehavior, Behavior_2, MyClass } from "./app";
 
 const app = new MyClass() ;
 
 (() => {
 
-    const btn_1 = document.getElementById('btn_1');
+    const addTransactionBtn = document.getElementById('btn__add-transaction');
+
     const btn_2 = document.getElementById('btn_2');
+    
     const statusBar = document.getElementById('status-bar');
     
-    if(btn_1 === null) {
+    if(addTransactionBtn === null) {
         console.log('button #1 is not defined');
         return ;
     } 
@@ -23,11 +25,11 @@ const app = new MyClass() ;
         return ;
     } 
 
-    btn_1.addEventListener('click' , () => {
+    addTransactionBtn.addEventListener('click' , () => {
         app.doSomeThing(() => {
             statusBar.innerHTML = 'what is going here' ;
-        } , new Behavior_1() ,() => {
-            statusBar.innerHTML = 'button 1 is clicked'; 
+        } , new AddTransactionBehavior() ,() => {
+            statusBar.innerHTML = 'transaction is sended'; 
         });
     });
 
